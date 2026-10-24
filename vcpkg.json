@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "greptimedb-cxx",
+  "version": "0.1.0",
+  "description": "Single-threaded synchronous C++26 GreptimeDB SDK",
+  "dependencies": [
+    "fmt",
+    "nghttp2",
+    "openssl",
+    "liburing",
+    "c-ares",
+    "protobuf",
+    "zlib",
+    "zstd",
+    "lz4",
+    "snappy"
+  ],
+  "features": {
+    "tests": {
+      "description": "Unit tests (GoogleTest)",
+      "dependencies": [
+        "gtest"
+      ]
+    },
+    "benchmarks": {
+      "description": "Microbenchmarks (Google Benchmark)",
+      "dependencies": [
+        "benchmark"
+      ]
+    }
+  }
+}

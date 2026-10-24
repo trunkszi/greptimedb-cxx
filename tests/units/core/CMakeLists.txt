@@ -1,0 +1,7 @@
+add_executable(test_config_error_and_hints test_config_error_and_hints.cc test_error_audit.cc)
+add_dependencies(test_config_error_and_hints greptimedb_proto_codegen)
+target_link_libraries(test_config_error_and_hints PRIVATE
+  greptimedb::core greptimedb_compile_options GTest::gtest_main)
+add_test(NAME unit.library.core.config_error_and_hints COMMAND test_config_error_and_hints)
+set_tests_properties(unit.library.core.config_error_and_hints PROPERTIES
+  LABELS "unit;library;core;config_error_and_hints")

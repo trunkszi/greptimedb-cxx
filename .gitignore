@@ -1,0 +1,12 @@
+/build/
+/.scratch/
+/.venv/
+/vcpkg_installed/
+.tmp/
+*.swp
+*.swo
+*~
+
+__pycache__/
+.pytest_cache/
+.ruff_cache/
