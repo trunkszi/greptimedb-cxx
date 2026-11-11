@@ -1,0 +1,132 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [gcc-glibc, clang-glibc, gcc-musl, clang-musl]
+    env:
+      GRPCXX_TOOLCHAIN: ${{ matrix.toolchain }}
+      CLANG_TIDY: clang-tidy-23
+      CCACHE_DIR: /home/runner/.cache/ccache
+      VCPKG_DEFAULT_BINARY_CACHE: /home/runner/.cache/vcpkg/archives
+      VCPKG_FORCE_SYSTEM_BINARIES: '1'
+      VCPKG_MAX_CONCURRENCY: '4'
+      GREPTIMEDB_E2E_REQUIRED: '1'
+      GREPTIMEDB_TEST_ENDPOINT: grpc://127.0.0.1:4001
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install CMake 4.0+
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: latest
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Cache toolchains and build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/toolchain/${{ matrix.toolchain }}
+            ~/.local/toolchain/gcc-glibc
+            ~/.cache/vcpkg/archives
+            ~/.cache/ccache
+            ~/.cache/greptime-proto
+          key: greptimedb-vcpkg-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('CMakePresets.json', 'cmake/toolchain/**', 'cmake/triplets/**', 'vcpkg.json', '.github/scripts/setup-vcpkg-overlay.sh', '.github/scripts/setup-ci-deps.sh') }}
+          restore-keys: greptimedb-vcpkg-${{ runner.os }}-${{ matrix.toolchain }}-
+      - name: Install toolchain and provision missing overlay ports
+        run: |
+          printf '%s\n' 'Acquire::Retries "3";' 'Acquire::http::Timeout "15";' 'Acquire::https::Timeout "15";' \
+            | sudo tee /etc/apt/apt.conf.d/99ci-network >/dev/null
+          if [[ -f /etc/apt/apt-mirrors.txt ]] && {
+            ! curl -fsSI --max-time 5 http://azure.archive.ubuntu.com/ubuntu/dists/noble/InRelease >/dev/null ||
+            ! curl -fsSI --max-time 5 https://security.ubuntu.com/ubuntu/dists/noble-security/InRelease >/dev/null
+          }; then
+            printf '%b\n' \
+              'https://mirrors.edge.kernel.org/ubuntu/\tpriority:1' \
+              'https://ubuntu.osuosl.org/ubuntu/\tpriority:2' \
+              'https://mirror.csclub.uwaterloo.ca/ubuntu/\tpriority:3' \
+              | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+          fi
+          bash scripts/install-dependencies.sh --toolchain "$GRPCXX_TOOLCHAIN"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/.cache/vcpkg/archives" "$HOME/.cache/ccache"
+      - name: Install clang-tidy-23
+        if: matrix.toolchain == 'clang-glibc'
+        run: |
+          command -v gpg >/dev/null || sudo apt-get install -y --no-install-recommends gnupg
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc >/dev/null
+          echo "deb https://apt.llvm.org/noble/ llvm-toolchain-noble-23 main" | sudo tee /etc/apt/sources.list.d/llvm.list >/dev/null
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang-tidy-23
+      - name: Start GreptimeDB and enable io_uring
+        run: |
+          sudo sysctl -w kernel.io_uring_disabled=0
+          docker run -d --name greptimedb-ci -p 127.0.0.1:4001:4001 \
+            greptime/greptimedb:latest standalone start --grpc-bind-addr 0.0.0.0:4001
+          for _ in $(seq 1 30); do
+            (echo >/dev/tcp/127.0.0.1/4001) 2>/dev/null && break
+            sleep 1
+          done
+          if ! (echo >/dev/tcp/127.0.0.1/4001) 2>/dev/null; then
+            docker logs greptimedb-ci >&2 || true
+            exit 1
+          fi
+      - name: Check CLI and source contracts
+        run: |
+          bash -n build.py scripts/install-dependencies.sh .github/scripts/*.sh
+          .github/scripts/check-source-contracts.sh
+          uv run --directory scripts/cli ruff check .
+          uv run --directory scripts/cli pytest
+      - name: Check C++ formatting
+        if: matrix.toolchain == 'clang-glibc'
+        run: ./build.py format --check
+      - name: Build and run all tests including live Docker E2E
+        run: |
+          mkdir -p "build/$GRPCXX_TOOLCHAIN/tmp"
+          cmake --preset "$GRPCXX_TOOLCHAIN"
+          cmake --build --preset "$GRPCXX_TOOLCHAIN" -j 4
+          ctest --preset "$GRPCXX_TOOLCHAIN" --timeout 20 -j 4 --output-on-failure
+      - name: Clang-tidy
+        if: matrix.toolchain == 'clang-glibc'
+        run: |
+          clang-tidy-23 --version
+          ./build.py tidy --preset clang-glibc
+      - name: Benchmark smoke
+        run: |
+          for target in bench_column_buf bench_reflected_row bench_arrow_ipc_codec bench_streaming_loopback; do
+            ./build.py bench --preset "$GRPCXX_TOOLCHAIN" --no-build -t "$target" -- --benchmark_min_time=0.01s
+          done
+      - name: Run ASan and UBSan tests
+        if: matrix.toolchain == 'gcc-glibc' || matrix.toolchain == 'clang-glibc'
+        run: |
+          if [[ "$GRPCXX_TOOLCHAIN" == gcc-glibc ]]; then preset=gcc-asan; else preset=clang-asan; fi
+          mkdir -p "build/$preset/tmp"
+          cmake --preset "$preset"
+          cmake --build --preset "$preset" -j 4
+          ctest --preset "$preset" --timeout 20 -j 4 --output-on-failure
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostics-${{ matrix.toolchain }}
+          path: |
+            build/**/Testing/Temporary/
+            build/**/CMakeFiles/CMakeConfigureLog.yaml
+            build/**/tidy-failure.log
+            build/**/tidy-coverage.json
+          if-no-files-found: ignore

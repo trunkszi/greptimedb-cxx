@@ -1,0 +1,19 @@
+greptimedb provides C++26 columnar ingestion, SQL, PromQL, DDL,
+reflected rows, Arrow Flight streaming, and per-thread client pools.
+
+    find_package(greptimedb CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE greptimedb::greptimedb)
+
+The umbrella header is <greptimedb/greptimedb.h>.
+greptimedb::greptimedb is the installed client surface. greptimedb::client is
+the unary client. greptimedb::flight is the Flight DoPut and DoGet surface.
+Domain modules link separately as greptimedb::core, greptimedb::batch,
+greptimedb::row, greptimedb::proto, greptimedb::flight_ipc, greptimedb::streaming, and
+greptimedb::threading.
+
+The port fetches the pinned
+greptime-proto tree and passes it as GREPTIME_PROTO_DIR with the fetcher-attested
+GREPTIME_PROTO_VERIFIED_REVISION.
+
+Generate portfile.cmake and vcpkg.json from the .in templates using the
+release version and verified @GIT_COMMIT_SHA@.

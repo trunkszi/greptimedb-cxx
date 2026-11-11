@@ -1,0 +1,43 @@
+vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
+
+vcpkg_from_git(
+    OUT_SOURCE_PATH SOURCE_PATH
+    URL "https://github.com/trunkszi/greptimedb.git"
+    REF "@GIT_COMMIT_SHA@"
+    FETCH_REF "main"
+    HEAD_REF "main"
+)
+
+vcpkg_from_git(
+    OUT_SOURCE_PATH GREPTIME_PROTO_SOURCE
+    URL "https://github.com/GreptimeTeam/greptime-proto.git"
+    REF "acb247415b8f4c2f0750783dab4e1f38c71f5860"
+)
+
+if(NOT EXISTS "${SOURCE_PATH}/LICENSE")
+    message(FATAL_ERROR "greptimedb packaging requires the project's LICENSE file")
+endif()
+
+vcpkg_cmake_configure(
+    SOURCE_PATH "${SOURCE_PATH}"
+    OPTIONS
+        "-DVCPKG_HOST_TRIPLET=${HOST_TRIPLET}"
+        "-DGREPTIME_PROTO_DIR=${GREPTIME_PROTO_SOURCE}"
+        "-DGREPTIME_PROTO_VERIFIED_REVISION=acb247415b8f4c2f0750783dab4e1f38c71f5860"
+        -DVCPKG_MANIFEST_MODE=OFF
+        -DGREPTIMEDB_BUILD_TESTING=OFF
+        -DGREPTIMEDB_BUILD_BENCHMARKS=OFF
+        -DGREPTIMEDB_BUILD_EXAMPLES=OFF
+)
+
+vcpkg_cmake_install()
+
+vcpkg_cmake_config_fixup(
+    PACKAGE_NAME greptimedb
+    CONFIG_PATH lib/cmake/greptimedb
+)
+
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE" "${GREPTIME_PROTO_SOURCE}/LICENSE")
+file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")

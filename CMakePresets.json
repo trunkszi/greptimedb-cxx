@@ -1,0 +1,362 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "gcc-glibc",
+      "displayName": "gcc-glibc / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/gcc-glibc.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests;benchmarks",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "ON",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "clang-glibc",
+      "displayName": "clang-glibc / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/clang-glibc.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-glibc",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests;benchmarks",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "ON",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "gcc-musl",
+      "displayName": "gcc-musl / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/gcc-musl.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-gcc-musl",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests;benchmarks",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "ON",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "clang-musl",
+      "displayName": "clang-musl / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/clang-musl.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-musl",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests;benchmarks",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "ON",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "gcc-asan",
+      "displayName": "gcc-asan / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/gcc-glibc.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-gcc-glibc-asan",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "OFF",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_C_FLAGS_DEBUG": "-g -fsanitize=address,undefined -fno-sanitize=vptr -fno-sanitize-recover=all -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS_DEBUG": "-g -fsanitize=address,undefined -fno-sanitize=vptr -fno-sanitize-recover=all -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS_DEBUG": "-fsanitize=address,undefined",
+        "CMAKE_SHARED_LINKER_FLAGS_DEBUG": "-fsanitize=address,undefined",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "clang-asan",
+      "displayName": "clang-asan / vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$penv{HOME}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain/clang-glibc.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-clang-glibc-asan",
+        "VCPKG_HOST_TRIPLET": "x64-linux-gcc-glibc",
+        "VCPKG_OVERLAY_PORTS": "$penv{HOME}/.local/vcpkg",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/build/${presetName}/vcpkg_installed",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "tests",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage",
+        "CMAKE_MAP_IMPORTED_CONFIG_DEBUG": "Release;None;",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release;None;",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GREPTIMEDB_BUILD_TESTING": "ON",
+        "GREPTIMEDB_BUILD_BENCHMARKS": "OFF",
+        "GREPTIMEDB_BUILD_EXAMPLES": "ON",
+        "BENCHMARK_ENABLE_WERROR": "OFF",
+        "CMAKE_C_FLAGS_DEBUG": "-g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS_DEBUG": "-g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS_DEBUG": "-fsanitize=address,undefined",
+        "CMAKE_SHARED_LINKER_FLAGS_DEBUG": "-fsanitize=address,undefined",
+        "CMAKE_CXX_SCAN_FOR_MODULES": "OFF"
+      },
+      "environment": {
+        "CCACHE_DIR": "$penv{HOME}/.cache/ccache",
+        "VCPKG_DEFAULT_BINARY_CACHE": "$penv{HOME}/.cache/vcpkg/archives",
+        "VCPKG_FORCE_SYSTEM_BINARIES": "1",
+        "VCPKG_MAX_CONCURRENCY": "4",
+        "TMPDIR": "${sourceDir}/build/${presetName}/tmp",
+        "TMP": "${sourceDir}/build/${presetName}/tmp",
+        "TEMP": "${sourceDir}/build/${presetName}/tmp",
+        "PATH": "$penv{HOME}/.local/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "gcc-glibc-vcpkg",
+      "inherits": "gcc-glibc",
+      "displayName": "GCC glibc manifest alias",
+      "binaryDir": "${sourceDir}/build/${presetName}"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gcc-glibc",
+      "configurePreset": "gcc-glibc",
+      "jobs": 4
+    },
+    {
+      "name": "clang-glibc",
+      "configurePreset": "clang-glibc",
+      "jobs": 4
+    },
+    {
+      "name": "gcc-musl",
+      "configurePreset": "gcc-musl",
+      "jobs": 4
+    },
+    {
+      "name": "clang-musl",
+      "configurePreset": "clang-musl",
+      "jobs": 4
+    },
+    {
+      "name": "gcc-asan",
+      "configurePreset": "gcc-asan",
+      "jobs": 4
+    },
+    {
+      "name": "clang-asan",
+      "configurePreset": "clang-asan",
+      "jobs": 4
+    },
+    {
+      "name": "gcc-glibc-vcpkg",
+      "configurePreset": "gcc-glibc-vcpkg",
+      "jobs": 4
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "gcc-glibc",
+      "configurePreset": "gcc-glibc",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "clang-glibc",
+      "configurePreset": "clang-glibc",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "gcc-musl",
+      "configurePreset": "gcc-musl",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "clang-musl",
+      "configurePreset": "clang-musl",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "gcc-asan",
+      "configurePreset": "gcc-asan",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "clang-asan",
+      "configurePreset": "clang-asan",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    },
+    {
+      "name": "gcc-glibc-vcpkg",
+      "configurePreset": "gcc-glibc-vcpkg",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "timeout": 20,
+        "jobs": 4
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -294,7 +294,7 @@
+     if (NOT DEFINED protobuf_LIB_UPB)
+       set(protobuf_LIB_UPB libupb)
+     endif ()
+-    include(${protobuf_SOURCE_DIR}/cmake/upb_generators.cmake)
++    # Only the C++ compiler and libraries are needed by this build.
+   endif ()
+   if (protobuf_BUILD_PROTOC_BINARIES)
+     include(${protobuf_SOURCE_DIR}/cmake/protoc.cmake)
+--- a/cmake/install.cmake
++++ b/cmake/install.cmake
+@@ -60,7 +60,7 @@
+   install(TARGETS protoc EXPORT protobuf-targets
+     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT protoc
+     BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT protoc)
+-  if (protobuf_BUILD_LIBUPB)
++  if (TARGET protoc-gen-upb)
+     foreach (generator upb upbdefs upb_minitable)
+       list(APPEND _protobuf_binaries protoc-gen-${generator})
+       install(TARGETS protoc-gen-${generator} EXPORT protobuf-targets

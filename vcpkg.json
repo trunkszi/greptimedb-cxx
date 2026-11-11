@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "greptimedb",
+  "version": "0.1.0",
+  "description": "C++26 GreptimeDB SDK with columnar ingestion, reflected rows, SQL and Arrow Flight streaming",
+  "homepage": "https://github.com/trunkszi/greptimedb",
+  "license": "MIT",
+  "supports": "linux & x64",
+  "dependencies": [
+    {
+      "name": "grpcxx",
+      "host": true
+    },
+    {
+      "name": "protobuf",
+      "host": true
+    },
+    "cares",
+    "grpcxx",
+    "lz4",
+    "nexora",
+    "protobuf",
+    "uarch",
+    "uring",
+    "zstd"
+  ],
+  "features": {
+    "tests": {
+      "description": "Unit tests (GoogleTest)",
+      "dependencies": [
+        "gtest"
+      ]
+    },
+    "benchmarks": {
+      "description": "Microbenchmarks (Google Benchmark)",
+      "dependencies": [
+        "benchmark"
+      ]
+    }
+  }
+}
